@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const delay = 5;
 
-export default function Percobaan() {
+export default function PercobaanDua() {
   const [show, setShow] = useState(false);
   const countList = 8;
 
@@ -11,7 +11,7 @@ export default function Percobaan() {
       let timer1 = setTimeout(() => setShow(!show), delay * 1000);
 
       // this will clear Timeout
-      // when component unmount 
+      // when component unmount
       return () => {
         clearTimeout(timer1);
       };

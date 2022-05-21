@@ -2,7 +2,7 @@ import { Button } from '@mui/material'
 import { Container } from 'react-bootstrap'
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { InfoComponent } from '../../components/InfoComponent'
-import { setLogout } from '../../features/lainnya/usersSlice';
+import { setLogout } from '../../features/user/usersSlice';
 
 function Dashboard() {
   const userIsLoggedIn = useAppSelector((state) => state.users.isLoggedIn);

@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { useAppDispatch } from "../../app/hooks";
-import { setLogin } from "../../features/lainnya/usersSlice";
+import { setLogin } from "../../features/user/usersSlice";
 
 const useStyles = makeStyles({
   form: {
