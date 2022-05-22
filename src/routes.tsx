@@ -1,5 +1,6 @@
 import { Counter } from "./components/Counter";
 import Percobaan from "./components/Percobaan";
+import PercobaanDua from "./components/PercobaanDua";
 import Home from "./pages/Home";
 import Dashboard from "./pages/user/Dashboard";
 import Login from "./pages/user/Login";
@@ -29,5 +30,10 @@ export const routes = [
     path: "/percobaan",
     name: "Percobaan",
     element: <Percobaan />,
+  },
+  {
+    path: "/percobaandua",
+    name: "Percobaan 2",
+    element: <PercobaanDua />,
   },
 ];

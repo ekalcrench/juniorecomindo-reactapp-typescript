@@ -51,6 +51,9 @@ export default function NavbarComponent() {
         <Link to="/percobaan" className={classes.navLink}>
           Percobaan
         </Link>
+        <Link to="/percobaandua" className={classes.navLink}>
+          Percobaan 2
+        </Link>
         <Link to="/counter" className={classes.navLink}>
           Counter
         </Link>
