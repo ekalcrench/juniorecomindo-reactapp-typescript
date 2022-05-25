@@ -4,14 +4,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface HomeSlice {
   dataCurrentPage: any[];
   dataNextPage: any[];
-  loading: boolean;
+  dataStartRequest: number;
 }
 
 // Define the initial state using that type
 const initialState: HomeSlice = {
   dataCurrentPage: [],
   dataNextPage: [],
-  loading: true,
+  dataStartRequest: 8,
 };
 
 export const homeSlice = createSlice({
@@ -26,13 +26,14 @@ export const homeSlice = createSlice({
       state.dataNextPage = action.payload;
       console.log("state.dataNextPage : ", state.dataNextPage);
     },
-    setLoading: (state, action: PayloadAction<any>) => {
-      state.loading = action.payload;
-      console.log("state.loading : ", state.loading);
+    setDataStartRequest: (state, action: PayloadAction<any>) => {
+      state.dataStartRequest = state.dataStartRequest + action.payload;
+      console.log("state.dataStartRequest : ", state.dataStartRequest);
     },
   },
 });
 
-export const { setDataCurrentPage, setDataNextPage, setLoading } = homeSlice.actions;
+export const { setDataCurrentPage, setDataNextPage, setDataStartRequest } =
+  homeSlice.actions;
 
 export default homeSlice.reducer;

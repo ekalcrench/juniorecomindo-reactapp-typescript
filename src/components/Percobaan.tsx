@@ -6,11 +6,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import NavbarComponent from "../components/NavbarComponent";
 import SearchComponent from "../components/SearchComponent";
-import {
-  setDataCurrentPage,
-  setDataNextPage,
-  setLoading,
-} from "../features/data/homeSlice";
+import { setDataCurrentPage } from "../features/data/homeSlice";
 import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
@@ -105,38 +101,14 @@ function Percobaan() {
   const dataSearch = useAppSelector((state) => state.search.dataSearch);
   // homeSlice
   const dataCurrentPage = useAppSelector((state) => state.home.dataCurrentPage);
-  const dataNextPage = useAppSelector((state) => state.home.dataNextPage);
-  const loading = useAppSelector((state) => state.home.loading);
-  console.log("Rendering... dataCurrentPage : ", dataCurrentPage);
-  console.log("Rendering... dataNextPage : ", dataNextPage);
-  console.log("Rendering... loading : ", loading);
-
-  let dataStartRequest = 0;
-  let dataLengthRequest = 8;
-  const [bottom, setBottom] = useState<boolean>(false);
+  
+  const dataLengthRequest = 8;
 
   // Untuk tampilan sementara
-  const [dataBefore, setDataBefore] = useState<List[] | Array<any>>();
-
-  // Ini hanya dipakai ketika mounting saja
-  // Mounting 8 list
-  const getPromoList = () => {
-    axios
-      .get(
-        API_URL +
-          "listPromos?_start=" +
-          dataStartRequest +
-          "&_limit=" +
-          dataLengthRequest
-      )
-      .then((res) => {
-        dispatch(setDataCurrentPage(res.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    dataStartRequest += dataLengthRequest;
-  };
+  const [dataBefore, setDataBefore] = useState<List[]>();
+  const [dataNextPage, setDataNextPage] = useState<List[]>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataStartRequest, setDataStartRequest] = useState<number>(8);
 
   // Store data dari next page ketika yang nantinya akan discrolling
   const getNextPage = () => {
@@ -149,34 +121,35 @@ function Percobaan() {
           dataLengthRequest
       )
       .then((res) => {
-        dispatch(setDataNextPage(res.data));
+        console.log("setDataNextPage : ", res.data);
+        setDataNextPage(res.data);
       })
       .catch((error) => {
         console.log(error);
       });
-    dataStartRequest += dataLengthRequest;
+    setDataStartRequest(dataStartRequest + dataLengthRequest);
   };
 
   const handleScroll = (event: any) => {
     console.log("loading : ", loading);
-    if (loading) {
+    if (!loading) {
       // Jika sudah mencapai bottom page
       if (
         window.innerHeight + event.target.documentElement.scrollTop + 1 >
         event.target.documentElement.offsetHeight
       ) {
         // Jika masih ada page selanjutnya dan tidak loading
-        if (dataNextPage.length > 0 && !loading) {
+        if (dataNextPage && dataNextPage.length > 0) {
+          event.target.documentElement.scrollTop += 20;
           // Untuk keperluan loading skeleton data selanjutnya
-          dispatch(setLoading(true));
+          setLoading(true);
           setDataBefore(dataCurrentPage); // Data before
           console.log("setDataBefore : ", dataCurrentPage);
           dispatch(setDataCurrentPage(dataNextPage));
           // Memanggil halaman selanjutnya
-          // getNextPage();
+          getNextPage();
         }
         console.log("BOTTOM PAGE");
-        // setBottom(true);
       }
     }
   };
@@ -186,9 +159,18 @@ function Percobaan() {
     () => {
       dispatch(setDataSearch([])); //Reset data dari search
 
-      getPromoList(); // Page sekarang
+      axios
+        .get(
+          API_URL +
+            "listPromos?_start=0&_limit=8"
+        )
+        .then((res) => {
+          dispatch(setDataCurrentPage(res.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       getNextPage(); // Page selanjutnya
-      
       console.log("ComponentDidMount");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -198,20 +180,16 @@ function Percobaan() {
   // ComponentDidMount and ComponentDidUpdate Set Time Out untuk Skeleton
   // useEffect tidak berpengaruh kepada selain dari return
   useEffect(() => {
-    // Jika si loading berubah menjadi true, maka akan set menjadi false dalam kurun waktu 2 detik
-    setTimeout(() => dispatch(setLoading(false)), 2000);
-    console.log("scroll scroll scroll");
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (loading) {
+      // Jika si loading berubah menjadi true, maka akan set menjadi false dalam kurun waktu 2 detik
+      setTimeout(() => setLoading(false), 2000);
+    } else {
+      console.log("scroll scroll scroll loading ", loading);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
-
-  // ComponentDidMount and ComponentDidUpdate Set Time Out untuk Skeleton
-  // useEffect tidak berpengaruh kepada selain dari return
-  useEffect(() => {
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bottom]);
 
   return (
     <div>

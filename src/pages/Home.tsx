@@ -2,10 +2,11 @@ import { Card, CardContent, CardMedia, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import NavbarComponent from "../components/NavbarComponent";
 import SearchComponent from "../components/SearchComponent";
+import { setDataCurrentPage, setDataNextPage, setDataStartRequest } from "../features/data/homeSlice";
 import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
@@ -94,99 +95,83 @@ function Home() {
   // Styling MUI
   const classes = useStyles();
 
-  // Navbar search
-  const dataSearch = useAppSelector((state) => state.search.dataSearch);
+  // React Redux, membuat data menjadi dynamic
   const dispatch = useAppDispatch();
+  // searchSlice
+  const dataSearch = useAppSelector((state) => state.search.dataSearch);
+  // homeSlice
+  const dataCurrentPage = useAppSelector((state) => state.home.dataCurrentPage);
+  const dataNextPage = useAppSelector((state) => state.home.dataNextPage);
+  const dataStartRequest = useAppSelector((state) => state.home.dataStartRequest);
 
-  // Untuk tampilan
-  let start = 0;
-  const countList = 8;
-  let currentPage: any[] = [];
-  let nextPage: any[] = [];
-  const [list, setList] = useState<List[] | Array<any> | undefined>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [listBefore, setListBefore] = useState<
-    List[] | Array<any> | undefined
-  >();
-  const [offset, setOffset] = useState<number>(8);
-  // let [loading, setLoading] = useState<boolean>();
+  const dataLengthRequest = 8;
 
-  // Ini hanya dipakai ketika mounting saja
-  // Mounting 12 list
-  const getPromoList = () => {
-    axios
-      .get(API_URL + "listPromos?_start=" + start + "&_limit=" + countList)
-      .then((res) => {
-        currentPage = res.data;
-        setList(currentPage);
-        console.log("currentPage : ", res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    start += countList;
-  };
+  // Untuk tampilan sementara
+  const [dataBefore, setDataBefore] = useState<List[]>();
+  // const [dataNextPage, setDataNextPage] = useState<List[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  // const [dataStartRequest, setDataStartRequest] = useState<number>(8);
 
   // Store data dari next page ketika yang nantinya akan discrolling
   const getNextPage = () => {
     axios
-      .get(API_URL + "listPromos?_start=" + start + "&_limit=" + countList)
+      .get(
+        API_URL +
+          "listPromos?_start=" +
+          dataStartRequest +
+          "&_limit=" +
+          dataLengthRequest
+      )
       .then((res) => {
-        nextPage = res.data;
-        console.log("nextPage : ", res.data);
+        console.log("setDataNextPage : ", res.data);
+        dispatch(setDataNextPage(res.data));
       })
       .catch((error) => {
         console.log(error);
       });
-    start += countList;
+    dispatch(setDataStartRequest(dataLengthRequest));
   };
 
   const handleScroll = (event: any) => {
-    if (
-      window.innerHeight + event.target.documentElement.scrollTop + 1 >
-      event.target.documentElement.offsetHeight
-    ) {
-      // Jika masih ada page selanjutnya
-      if (nextPage.length !== 0) {
-        // Disaring dulu agar tidak double datanya
-        let find = false;
-        currentPage.filter((page) => {
-          if (page.id === nextPage[0].id) {
-            find = true;
-            return find;
-          }
-          return false;
-        });
-        if (find === false) {
+    console.log("loading : ", loading);
+    if (!loading) {
+      // Jika sudah mencapai bottom page
+      if (
+        window.innerHeight + event.target.documentElement.scrollTop + 1 >
+        event.target.documentElement.offsetHeight
+      ) {
+        // Jika masih ada page selanjutnya dan tidak loading
+        if (dataNextPage && dataNextPage.length > 0) {
+          event.target.documentElement.scrollTop += 20;
           // Untuk keperluan loading skeleton data selanjutnya
-          // pending = true;
           setLoading(true);
-          setOffset(countList);
-          setListBefore(currentPage);
-          console.log("setListBefore : ", currentPage);
-
-          // Untuk keperluan tampilan semua data
-          currentPage = [...currentPage, ...nextPage];
-          setList(currentPage);
-          console.log("setList : ", currentPage);
-
+          setDataBefore(dataCurrentPage); // Data before
+          console.log("setDataBefore : ", dataCurrentPage);
+          dispatch(setDataCurrentPage(dataNextPage));
           // Memanggil halaman selanjutnya
-          // getNextPage();
-        } else {
-          console.log("Data double BROH !!!");
+          getNextPage();
         }
+        console.log("BOTTOM PAGE");
       }
-      console.log("BOTTOM PAGE");
     }
   };
 
   // ComponentDidMount
-  useEffect(
+  useLayoutEffect(
     () => {
-      getPromoList(); // Page sekarang
-      getNextPage(); // Page selanjutnya
-      dispatch(setDataSearch([]));
-      window.addEventListener("scroll", handleScroll);
+      dispatch(setDataSearch([])); //Reset data dari search
+      if (!dataCurrentPage || dataCurrentPage.length === 0) {
+        setLoading(true);
+        axios
+          .get(API_URL + "listPromos?_start=0&_limit=8")
+          .then((res) => {
+            dispatch(setDataCurrentPage(res.data));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        getNextPage(); // Page selanjutnya
+      } 
       console.log("ComponentDidMount");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,11 +181,14 @@ function Home() {
   // ComponentDidMount and ComponentDidUpdate Set Time Out untuk Skeleton
   // useEffect tidak berpengaruh kepada selain dari return
   useEffect(() => {
-    console.log("Masuk useEffect()");
-    setTimeout(() => setLoading(false), 2000);
-    console.log("Loading : ", loading);
-    // Harus clearTimeout agar tidak terjadi leak memory karena akan tetap berjalan
-    // clearTimeout(timer);
+    if (loading) {
+      // Jika si loading berubah menjadi true, maka akan set menjadi false dalam kurun waktu 2 detik
+      setTimeout(() => setLoading(false), 2000);
+    } else {
+      console.log("scroll scroll scroll loading ", loading);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
@@ -227,10 +215,10 @@ function Home() {
           {/* Body */}
           <div className={classes.container}>
             {/* If statement untuk skeleton */}
-            {!loading && list ? (
+            {!loading && dataCurrentPage ? (
               // Jika tidak loading dan ada listnya
               <Box className={classes.box}>
-                {list?.map((promo) => {
+                {dataCurrentPage.map((promo) => {
                   return (
                     <div className={classes.item} key={promo.id}>
                       {/* Image Brand */}
@@ -286,7 +274,7 @@ function Home() {
             ) : (
               // Jika loading atau belum ada listnya
               <Box className={classes.box}>
-                {listBefore?.map((promo) => {
+                {dataBefore?.map((promo) => {
                   return (
                     <div className={classes.item} key={promo.id}>
                       {/* Image Brand */}
@@ -338,7 +326,7 @@ function Home() {
                     </div>
                   );
                 })}
-                {Array.from(Array(offset), (e, i) => {
+                {Array.from(Array(dataLengthRequest), (e, i) => {
                   // Skeleton
                   return (
                     <div className={classes.item} key={i}>
