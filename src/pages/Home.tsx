@@ -11,6 +11,10 @@ import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
 const useStyles = makeStyles({
+  body: {
+    fontFamily:
+      "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
+  },
   header: {
     display: "flex",
     height: "70px",
@@ -198,7 +202,7 @@ function Home() {
       {dataSearch.length > 0 ? (
         <SearchComponent />
       ) : (
-        <div>
+        <div className={classes.body}>
           {/* Header */}
           <div>
             <Box className={classes.header}>

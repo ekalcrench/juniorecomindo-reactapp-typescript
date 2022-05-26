@@ -10,10 +10,15 @@ import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
 const useStyles = makeStyles({
+  body: {
+    fontFamily:
+      "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
+  },
   navLink: {
     textDecoration: "none",
-    color: "#000000",
-    fontSize: "18px",
+    fontSize: "11px",
+    fontWeight: "500",
+    color: "#a9a9a9",
     marginTop: "-10px",
     marginLeft: "10px",
     marginRight: "10px",
@@ -69,7 +74,7 @@ const NavbarComponent = () => {
   }, [search, loading]);
 
   return (
-    <div>
+    <div className={classes.body}>
       <AppBar
         position="sticky"
         sx={{
@@ -78,7 +83,7 @@ const NavbarComponent = () => {
           borderBottom: "1px solid #eeecea",
           alignItems: "center",
           boxShadow: "0px 0px",
-          height: "55px",
+          minHeight: "55px",
         }}
       >
         <Toolbar>
@@ -101,9 +106,6 @@ const NavbarComponent = () => {
               />
             </FormControl>
           </form>
-          <Link to="/percobaan" className={classes.navLink}>
-            Percobaan
-          </Link>
           {userIsLoggedIn ? (
             <Link to="/dashboard" className={classes.navLink}>
               Dashboard
@@ -113,6 +115,9 @@ const NavbarComponent = () => {
               Login
             </Link>
           )}
+          <Link to="/dashboard" className={classes.navLink}>
+            Dashboard
+          </Link>
         </Toolbar>
       </AppBar>
     </div>
