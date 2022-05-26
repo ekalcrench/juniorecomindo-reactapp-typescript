@@ -1,6 +1,4 @@
-import { FormControl, OutlinedInput } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
+import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -10,21 +8,77 @@ import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
 const useStyles = makeStyles({
-  body: {
-    fontFamily:
-      "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
+  nav: {
+    position: "sticky",
+    top: 0,
+    display: "flex",
+    background: "#ffffff",
+    borderBottom: "1px solid #eeecea",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0px 0px",
+    minHeight: "55px",
+  },
+  row: {
+    display: "flex",
+    width: "46.82%", // untuk xl
+    // width: "73%", // untuk md
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+  col3: {
+    display: "flex",
+    width: "25%",
+    alignItems: "center",
+  },
+  col6: {
+    display: "flex",
+    width: "50%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   navLink: {
     textDecoration: "none",
     fontSize: "11px",
     fontWeight: "500",
     color: "#a9a9a9",
-    marginTop: "-10px",
-    marginLeft: "10px",
-    marginRight: "10px",
+  },
+  navForm: {
+    // Background Search Bar
+    backgroundImage: "url(/assets/gif/search.gif)",
+    backgroundSize: "120px 25px",
+    backgroundRepeat: "no-repeat",
+    backgroundPositionX: "10px",
+    backgroundPositionY: "center",
+    "&:focus": {
+      backgroundSize: "0px",
+      "&::placeholder": {
+        fontSize: "16px",
+        fontWeight: "100",
+        color: "#858585",
+      },
+    },
+    "&::placeholder": {
+      color: "transparent",
+    },
+
+    // Ukuran Search Bar
+    width: "100%",
+    backgroundColor: "#eeecea",
+    borderRadius: "5px",
+    borderWidth: "0px",
+    paddingLeft: "10px",
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    outline: "none",
+  },
+  navRight: {
+    justifyContent: "right",
   },
   logoBrand: {
     height: "30px",
+    // padding: "3px 0!important",
   },
 });
 
@@ -66,7 +120,7 @@ const NavbarComponent = () => {
             console.log(error);
           });
       } else {
-        // Jika data sudah lebih dari 3 karakter dan 
+        // Jika data sudah lebih dari 3 karakter dan
         setTimeout(() => setLoading(true), 2000);
       }
     }
@@ -74,54 +128,51 @@ const NavbarComponent = () => {
   }, [search, loading]);
 
   return (
-    <div className={classes.body}>
-      <AppBar
-        position="sticky"
-        sx={{
-          background: "#ffffff",
-          color: "#000000",
-          borderBottom: "1px solid #eeecea",
-          alignItems: "center",
-          boxShadow: "0px 0px",
-          minHeight: "55px",
-        }}
-      >
-        <Toolbar>
-          <Link to="/home" className={classes.navLink}>
-            <img
-              src="https://www.poinin.com/_next/image?url=%2Fassets%2Ficon%2Fpoinin_icon.png&w=1920&q=75"
-              className={classes.logoBrand}
-              alt="Logo Poinin"
-            ></img>
-          </Link>
-          <form onSubmit={handleSubmit}>
-            <FormControl size="small" sx={{ width: "180px", height: "55px" }}>
-              <OutlinedInput
-                id="search"
-                type="text"
-                name="search"
-                value={search}
-                placeholder="Searching..."
-                onChange={(event) => handleChange(event)}
-              />
-            </FormControl>
-          </form>
-          {userIsLoggedIn ? (
-            <Link to="/dashboard" className={classes.navLink}>
-              Dashboard
-            </Link>
-          ) : (
-            <Link to="/login" className={classes.navLink}>
-              Login
-            </Link>
-          )}
-          <Link to="/dashboard" className={classes.navLink}>
+    <div className={classes.nav}>
+      <div className={classes.row}>
+        <Link to="/home" className={classes.col3}>
+          <img
+            src="https://www.poinin.com/_next/image?url=%2Fassets%2Ficon%2Fpoinin_icon.png&w=1920&q=75"
+            className={classes.logoBrand}
+            alt="Logo Poinin"
+          ></img>
+        </Link>
+        <form onSubmit={handleSubmit} className={classes.col6}>
+          <input
+            className={classes.navForm}
+            placeholder="Search Promo and Mall"
+            type="text"
+            name="search"
+            value={search}
+            onChange={(event) => handleChange(event)}
+          />
+        </form>
+        {userIsLoggedIn ? (
+          <Link
+            to="/dashboard"
+            className={classNames(
+              classes.navLink,
+              classes.col3,
+              classes.navRight
+            )}
+          >
             Dashboard
           </Link>
-        </Toolbar>
-      </AppBar>
+        ) : (
+          <Link
+            to="/login"
+            className={classNames(
+              classes.navLink,
+              classes.col3,
+              classes.navRight
+            )}
+          >
+            Cari Promo? di Poinin Aja
+          </Link>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default NavbarComponent;
