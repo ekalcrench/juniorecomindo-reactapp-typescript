@@ -1,4 +1,3 @@
-import { Card, CardContent, CardMedia, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import axios from "axios";
@@ -6,22 +5,20 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import NavbarComponent from "../components/NavbarComponent";
 import SearchComponent from "../components/SearchComponent";
-import { setDataCurrentPage, setDataNextPage, setDataStartRequest } from "../features/data/homeSlice";
+import { CardComponent, SkeletonComponent } from "../components/PromoComponent";
+import {
+  setDataCurrentPage,
+  setDataNextPage,
+  setDataStartRequest,
+} from "../features/data/homeSlice";
 import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
 
 const useStyles = makeStyles({
-  html: {
-    margin: "-8px",
-  },
-  body: {
-    fontFamily:
-      "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif",
-  },
   header: {
     display: "flex",
     height: "70px",
-    width: "700px",
+    width: "710px",
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -33,9 +30,9 @@ const useStyles = makeStyles({
   judulHeader: {
     display: "inline-block",
     alignSelf: "flex-end",
-    fontSize: "20px",
+    fontSize: "19px",
     fontWeight: "bold",
-    marginLeft: "20px",
+    marginLeft: "25px",
     paddingBottom: "10px",
   },
   container: {
@@ -49,42 +46,8 @@ const useStyles = makeStyles({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  item: {
-    marginTop: "30px",
-    marginLeft: "20px",
-    marginRight: "20px",
-  },
   imageHotPromo: {
     width: "30px",
-  },
-  imageBrand: {
-    height: "25px",
-    marginBottom: "15px",
-    marginLeft: "5px",
-  },
-  imageJenis: {
-    height: "150px",
-    marginTop: "-10px",
-  },
-  imageWaktuBerakhir: {
-    height: "12px",
-  },
-  cardHeader: {
-    fontSize: "10px",
-    fontWeight: "bold",
-    marginTop: "-15px",
-    marginBottom: "10px",
-    marginLeft: "-3px",
-  },
-  cardContent: {
-    fontSize: "12px",
-    marginLeft: "-3px",
-  },
-  waktuBerakhir: {
-    fontSize: "8px",
-    fontWeight: "bold",
-    marginTop: "-10px",
-    marginLeft: "5px",
   },
 });
 
@@ -109,7 +72,9 @@ function Home() {
   // homeSlice
   const dataCurrentPage = useAppSelector((state) => state.home.dataCurrentPage);
   const dataNextPage = useAppSelector((state) => state.home.dataNextPage);
-  const dataStartRequest = useAppSelector((state) => state.home.dataStartRequest);
+  const dataStartRequest = useAppSelector(
+    (state) => state.home.dataStartRequest
+  );
 
   const dataLengthRequest = 8;
 
@@ -178,7 +143,7 @@ function Home() {
             console.log(error);
           });
         getNextPage(); // Page selanjutnya
-      } 
+      }
       console.log("ComponentDidMount");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -200,14 +165,13 @@ function Home() {
   }, [loading]);
 
   return (
-    <div className={classes.html}>
+    <div>
       <NavbarComponent />
       {dataSearch.length > 0 ? (
         <SearchComponent />
       ) : (
-        <div className={classes.body}>
-          {/* Header */}
           <div>
+            {/* Header */}
             <Box className={classes.header}>
               <div className={classes.iconHeader}>
                 <img
@@ -218,185 +182,30 @@ function Home() {
               </div>
               <div className={classes.judulHeader}>Promo Terbaik Hari Ini</div>
             </Box>
+            {/* Body */}
+            <div className={classes.container}>
+              {/* If statement untuk skeleton */}
+              {!loading && dataCurrentPage ? (
+                // Jika tidak loading dan ada listnya
+                <Box className={classes.box}>
+                  {dataCurrentPage.map((promo) => {
+                    return <CardComponent promo={promo} />;
+                  })}
+                </Box>
+              ) : (
+                // Jika loading atau belum ada listnya
+                <Box className={classes.box}>
+                  {dataBefore?.map((promo) => {
+                    return <CardComponent promo={promo} />;
+                  })}
+                  {Array.from(Array(dataLengthRequest), (e, i) => {
+                    // Skeleton
+                    return <SkeletonComponent i={i} />;
+                  })}
+                </Box>
+              )}
+            </div>
           </div>
-          {/* Body */}
-          <div className={classes.container}>
-            {/* If statement untuk skeleton */}
-            {!loading && dataCurrentPage ? (
-              // Jika tidak loading dan ada listnya
-              <Box className={classes.box}>
-                {dataCurrentPage.map((promo) => {
-                  return (
-                    <div className={classes.item} key={promo.id}>
-                      {/* Image Brand */}
-                      <img
-                        src={"assets/images/brand/" + promo.imageBrand}
-                        className={classes.imageBrand}
-                        alt={promo.brand}
-                      ></img>
-                      {/* Card */}
-                      <Card
-                        sx={{
-                          borderRadius: "10px",
-                          boxShadow: "1px 1px 2px 2px rgb(0 0 0 / 10%)",
-                        }}
-                      >
-                        <CardContent>
-                          <div className={classes.cardHeader}>Hot Promo</div>
-                          <div className={classes.cardContent}>
-                            {promo.jenis}
-                          </div>
-                          <div className={classes.cardContent}>
-                            <strong>{promo.subjenis}</strong>
-                          </div>
-                        </CardContent>
-                        <CardMedia
-                          component="img"
-                          image={"assets/images/" + promo.imageJenis}
-                          className={classes.imageJenis}
-                          alt={"assets/images/" + promo.imageJenis}
-                        />
-                      </Card>
-                      {/* Timer Discount */}
-                      <div>
-                        <Box component="div" sx={{ display: "inline" }}>
-                          <img
-                            src="assets/images/hours_glass.png"
-                            className={classes.imageWaktuBerakhir}
-                            alt="Waktu Berakhir"
-                          ></img>
-                        </Box>
-                        <Box
-                          className={classes.waktuBerakhir}
-                          component="div"
-                          sx={{ display: "inline" }}
-                        >
-                          {promo.waktuBerakhir}
-                        </Box>
-                      </div>
-                    </div>
-                  );
-                })}
-              </Box>
-            ) : (
-              // Jika loading atau belum ada listnya
-              <Box className={classes.box}>
-                {dataBefore?.map((promo) => {
-                  return (
-                    <div className={classes.item} key={promo.id}>
-                      {/* Image Brand */}
-                      <img
-                        src={"assets/images/brand/" + promo.imageBrand}
-                        className={classes.imageBrand}
-                        alt={promo.brand}
-                      ></img>
-                      {/* Card */}
-                      <Card
-                        sx={{
-                          borderRadius: "10px",
-                          boxShadow: "1px 1px 2px 2px rgb(0 0 0 / 10%)",
-                        }}
-                      >
-                        <CardContent>
-                          <div className={classes.cardHeader}>Hot Promo</div>
-                          <div className={classes.cardContent}>
-                            {promo.jenis}
-                          </div>
-                          <div className={classes.cardContent}>
-                            <strong>{promo.subjenis}</strong>
-                          </div>
-                        </CardContent>
-                        <CardMedia
-                          component="img"
-                          image={"assets/images/" + promo.imageJenis}
-                          className={classes.imageJenis}
-                          alt={"assets/images/" + promo.imageJenis}
-                        />
-                      </Card>
-                      {/* Timer Discount */}
-                      <div>
-                        <Box component="div" sx={{ display: "inline" }}>
-                          <img
-                            src="assets/images/hours_glass.png"
-                            className={classes.imageWaktuBerakhir}
-                            alt="Waktu Berakhir"
-                          ></img>
-                        </Box>
-                        <Box
-                          className={classes.waktuBerakhir}
-                          component="div"
-                          sx={{ display: "inline" }}
-                        >
-                          {promo.waktuBerakhir}
-                        </Box>
-                      </div>
-                    </div>
-                  );
-                })}
-                {Array.from(Array(dataLengthRequest), (e, i) => {
-                  // Skeleton
-                  return (
-                    <div className={classes.item} key={i}>
-                      {/* Image Brand */}
-                      <Skeleton
-                        variant="rectangular"
-                        sx={{
-                          height: "25px",
-                          width: "70%",
-                          marginBottom: "18px",
-                          marginLeft: "5px",
-                          borderRadius: "20px",
-                        }}
-                      />
-                      {/* Card */}
-                      <Card
-                        sx={{
-                          borderRadius: "10px",
-                          boxShadow: "1px 1px 2px 2px rgb(0 0 0 / 10%)",
-                        }}
-                      >
-                        <CardContent>
-                          <div className={classes.cardHeader}>
-                            <Skeleton
-                              variant="text"
-                              sx={{ width: "50px", height: "12px" }}
-                            />
-                          </div>
-                          <div className={classes.cardContent}>
-                            <Skeleton
-                              variant="text"
-                              sx={{ width: "40px", height: "15px" }}
-                            />
-                          </div>
-                          <div className={classes.cardContent}>
-                            <Skeleton
-                              variant="text"
-                              sx={{ height: "15px", marginTop: "-2px" }}
-                            />
-                          </div>
-                        </CardContent>
-                        <Skeleton
-                          variant="rectangular"
-                          sx={{ height: "150px", marginTop: "-10px" }}
-                        />
-                      </Card>
-                      {/* Timer Discount */}
-                      <Skeleton
-                        variant="rectangular"
-                        sx={{
-                          height: "12px",
-                          width: "65%",
-                          marginTop: "10px",
-                          borderRadius: "10px",
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-              </Box>
-            )}
-          </div>
-        </div>
       )}
     </div>
   );

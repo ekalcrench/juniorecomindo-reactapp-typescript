@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
   row: {
     display: "flex",
-    width: "46.82%", // untuk xl
+    width: "47.5%", // untuk xl
     // width: "73%", // untuk md
     alignItems: "center",
     justifyContent: "center",
