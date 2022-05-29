@@ -11,7 +11,7 @@ import { useLayoutEffect } from "react";
 
 const useStyles = makeStyles({
   login: {
-    height: "600px",
+    height: "620px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

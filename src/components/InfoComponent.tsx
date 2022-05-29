@@ -1,5 +1,4 @@
 import { FormControl, OutlinedInput } from "@mui/material";
-import { Container } from "react-bootstrap";
 import { useAppSelector } from "../app/hooks";
 
 type PropsType = {
@@ -21,8 +20,12 @@ export const InfoComponent = (props: PropsType) => {
   };
 
   return (
-    <Container>
+    <div>
       <br />
+      <h2>
+        Anda telah login dengan email <strong>{userEmail}</strong> dan masuk ke
+        halaman Dashboard
+      </h2>
       <form onSubmit={handleSubmit}>
         <FormControl>
           <OutlinedInput
@@ -32,17 +35,17 @@ export const InfoComponent = (props: PropsType) => {
             value={props.name}
             placeholder="Searching..."
             onChange={(event) => handleChange(event)}
+            sx={{ width: "100%" }}
           />
         </FormControl>
       </form>
-      <h2>Hello {props.name}</h2>
-      <h5>Ini InfoComponent</h5>
-      <h5>
-        Anda telah login dengan email <strong>{userEmail}</strong> dan masuk ke
-        halaman Dashboard
-      </h5>
+      <br />
       <hr />
       <br />
-    </Container>
+      <h2>Hello {props.name}</h2>
+      <h5>Ini InfoComponent</h5>
+      <hr />
+      <br />
+    </div>
   );
 };

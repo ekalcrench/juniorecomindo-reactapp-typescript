@@ -55,6 +55,27 @@ const useStyles = makeStyles({
     objectFit: "cover",
     margin: "0px auto",
   },
+  textImage: {
+    position: "absolute",
+    display: "flex",
+    height: "155px",
+    width: "145px",
+  },
+  text: {
+    display: "flex",
+    marginTop: "122.25px",
+    height: "32.75px",
+    width: "100%",
+    backgroundColor: "hsla(0,0%,92.5%,.9)",
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+  },
+  imagePembayaran: {
+    height: "40%",
+    objectFit: "scale-down",
+    marginTop: "10px",
+    marginLeft: "10px"
+  },
   bottomCard: {
     display: "flex",
     marginTop: "2px",
@@ -126,6 +147,22 @@ export const CardComponent = (props: PropsCard) => {
               alt={"assets/images/" + props.promo.imageJenis}
               className={classes.cardImageDetail}
             ></img>
+            {props.promo.pembayaran.length > 0 && (
+              <div className={classes.textImage}>
+                <div className={classes.text}>
+                  {" "}
+                  <img
+                    src={
+                      "assets/images/pembayaran/" +
+                      props.promo.pembayaran +
+                      ".png"
+                    }
+                    alt={"assets/images/pembayaran/" + props.promo.pembayaran}
+                    className={classes.imagePembayaran}
+                  ></img>
+                </div>
+              </div>
+            )}
           </div>
         </Card>
       </div>

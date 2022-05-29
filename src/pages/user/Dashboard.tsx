@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useLayoutEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { InfoComponent } from "../../components/InfoComponent";
 import NavbarComponent from "../../components/NavbarComponent";
@@ -8,7 +8,21 @@ import SearchComponent from "../../components/SearchComponent";
 import { setDataSearch } from "../../features/search/searchSlice";
 import { setLogout } from "../../features/user/usersSlice";
 
+const useStyles = makeStyles({
+  dashboard: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  container: {
+    width: "80%",
+  },
+});
+
 function Dashboard() {
+  // MUI styling
+  const classes = useStyles();
+
   // Redux
   const dataSearch = useAppSelector((state) => state.search.dataSearch);
   const userIsLoggedIn = useAppSelector((state) => state.users.isLoggedIn);
@@ -31,35 +45,37 @@ function Dashboard() {
       {dataSearch.length > 0 ? (
         <SearchComponent />
       ) : (
-        <Container>
-          <InfoComponent
-            name={name}
-            setName={setName}
-            isLoggedIn={userIsLoggedIn}
-          />
-          {name ? <h3>Ada namanya</h3> : <h3>Ga ada namanya</h3>}
-          <h2>Hello {name}</h2>
-          <h5>Ini Dashboard</h5>
-
-          {/* Logout */}
-          <Button
-            onClick={() => dispatch(setLogout())}
-            sx={{
-              backgroundColor: "#fe5b2c",
-              borderRadius: "15px",
-              boxShadow: "1px 1px 2px 2px rgb(0 0 0 / 10%)",
-              color: "white",
-              height: "40px",
-              width: "100%",
-              "&:hover": {
-                backgroundColor: "rgb(247, 247, 247)",
-                color: "#fe5b2c",
-              },
-            }}
-          >
-            Logout Bor
-          </Button>
-        </Container>
+        <div className={classes.dashboard}>
+          <div className={classes.container}>
+            <InfoComponent
+              name={name}
+              setName={setName}
+              isLoggedIn={userIsLoggedIn}
+            />
+            <h2>Hello {name}</h2>
+            <h5>Ini Dashboard</h5>
+            <hr />
+            <br />
+            {/* Logout */}
+            <Button
+              onClick={() => dispatch(setLogout())}
+              sx={{
+                backgroundColor: "#fe5b2c",
+                borderRadius: "15px",
+                boxShadow: "1px 1px 2px 2px rgb(0 0 0 / 10%)",
+                color: "white",
+                height: "40px",
+                width: "100%",
+                "&:hover": {
+                  backgroundColor: "rgb(247, 247, 247)",
+                  color: "#fe5b2c",
+                },
+              }}
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
