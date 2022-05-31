@@ -1,5 +1,5 @@
-import Percobaan from "./components/Percobaan";
 import Home from "./pages/Home";
+import { Percobaan} from "./pages/Percobaan";
 import Dashboard from "./pages/user/Dashboard";
 import Login from "./pages/user/Login";
 
@@ -25,3 +25,4 @@ export const routes = [
     element: <Percobaan />,
   },
 ];
+

@@ -160,7 +160,7 @@ const NavbarComponent = () => {
           </Link>
         ) : (
           <Link
-            to="/login"
+            to="/percobaan"
             className={classNames(
               classes.navLink,
               classes.col3,

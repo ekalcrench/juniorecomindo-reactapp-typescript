@@ -185,7 +185,7 @@ function Home() {
             {/* Body */}
             <div className={classes.container}>
               {/* If statement untuk skeleton */}
-              {!loading && dataCurrentPage ? (
+              {!loading && dataCurrentPage.length > 0 ? (
                 // Jika tidak loading dan ada listnya
                 <Box className={classes.box}>
                   {dataCurrentPage.map((promo) => {

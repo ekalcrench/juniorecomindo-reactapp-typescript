@@ -131,8 +131,21 @@ export const CardComponent = (props: PropsCard) => {
               Hot Promo
             </div>
             <div className={classes.cardContent}>
-              <div style={{ fontWeight: "normal" }}>{props.promo.jenis}</div>
-              <div style={{ fontWeight: "bold", marginTop: "1px" }}>
+              <div
+                style={{
+                  fontWeight: "normal",
+                  color: props.promo.color,
+                }}
+              >
+                {props.promo.jenis}
+              </div>
+              <div
+                style={{
+                  fontWeight: "bold",
+                  marginTop: "1px",
+                  color: props.promo.color,
+                }}
+              >
                 {props.promo.subjenis}
               </div>
             </div>
