@@ -152,7 +152,7 @@ const NavbarComponent = () => {
             onChange={(event) => handleChange(event)}
           />
         </form>
-        {isAuthenticated ? (
+        {isAuthenticated || userIsLoggedIn ? (
           <Link
             to="/dashboard"
             className={classNames(
