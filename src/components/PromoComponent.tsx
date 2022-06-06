@@ -1,5 +1,6 @@
 import { Card, CardContent, Skeleton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { IMAGES_PATH } from "../utils/api";
 
 const useStyles = makeStyles({
   item: {
@@ -156,8 +157,8 @@ export const CardComponent = (props: PropsCard) => {
             style={{ backgroundColor: props.promo.color }}
           >
             <img
-              src={"assets/images/" + props.promo.imageJenis}
-              alt={"assets/images/" + props.promo.imageJenis}
+              src={IMAGES_PATH + props.promo.imageJenis}
+              alt={IMAGES_PATH + props.promo.imageJenis}
               className={classes.cardImageDetail}
             ></img>
             {props.promo.pembayaran.length > 0 && (

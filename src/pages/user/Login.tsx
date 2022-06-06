@@ -7,7 +7,9 @@ import NavbarComponent from "../../components/NavbarComponent";
 import SearchComponent from "../../components/SearchComponent";
 import { setDataSearch } from "../../features/search/searchSlice";
 import { useLayoutEffect } from "react";
-
+import { IMAGES_PATH } from "../../utils/api";
+import { loginRequest } from "../../authConfig";
+import { useMsal } from "@azure/msal-react";
 
 const useStyles = makeStyles({
   login: {
@@ -31,10 +33,16 @@ const useStyles = makeStyles({
     fontSize: "30px",
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: "40px",
+    marginBottom: "30px",
   },
   isiLogin: {
     width: "100%",
+  },
+  outlookLogin: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
     "&::placeholder": {
@@ -62,7 +70,20 @@ const useStyles = makeStyles({
     boxShadow: "1px 1px 2px 1px rgb(0 0 0 / 10%)",
     marginTop: "20px",
   },
+  atau: {
+    width: "100%",
+    fontSize: "13px",
+    textAlign: "center",
+    marginTop: "20px",
+  },
 });
+
+// Outlook login
+function handleLogin(instance: any) {
+  instance.loginPopup(loginRequest).catch((e: any) => {
+    console.error(e);
+  });
+}
 
 type Data = {
   email: string;
@@ -72,9 +93,11 @@ type Data = {
 export default function Login() {
   // MUI styling
   const classes = useStyles();
+
   // Redux
   const dataSearch = useAppSelector((state) => state.search.dataSearch);
   const dispatch = useAppDispatch();
+
   // React hook form
   const {
     register,
@@ -82,8 +105,11 @@ export default function Login() {
     formState: { errors },
   } = useForm<Data>();
   const onSubmit: SubmitHandler<Data> = (data) => {
-    dispatch(setLogin(data.email));
+    dispatch(setLogin(data));
   };
+
+  // Outlook Login
+  const { instance } = useMsal();
 
   // ComponentDidMount
   useLayoutEffect(
@@ -139,9 +165,35 @@ export default function Login() {
                     },
                   }}
                 >
-                  Submit
+                  Login
                 </Button>
               </form>
+            </div>
+            <div className={classes.atau}>
+              <div>atau</div>
+            </div>
+            <div className={classes.outlookLogin}>
+              <Button
+                onClick={() => handleLogin(instance)}
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  height: "40px",
+                  width: "43%",
+                  marginTop: "20px",
+                  "&:hover": {
+                    backgroundColor: "white",
+                    color: "#fe5b2c",
+                  },
+                }}
+              >
+                <img
+                  src={IMAGES_PATH + "microsoft.png"}
+                  alt={IMAGES_PATH + "microsoft.png"}
+                  style={{ height: "100%", objectFit: "scale-down" }}
+                />
+                Login dengan Outlook
+              </Button>
             </div>
           </div>
         </div>

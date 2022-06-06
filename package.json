@@ -5,6 +5,8 @@
   "dependencies": {
     "@azure/data-tables": "^13.1.1",
     "@azure/identity": "^2.0.4",
+    "@azure/msal-browser": "^2.24.0",
+    "@azure/msal-react": "^1.4.0",
     "@azure/storage-blob": "^12.10.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

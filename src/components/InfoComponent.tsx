@@ -1,10 +1,12 @@
 import { FormControl, OutlinedInput } from "@mui/material";
 import { useAppSelector } from "../app/hooks";
+import { ProfileData } from "./ProfileData";
 
 type PropsType = {
   name: string;
   setName: any;
   isLoggedIn: boolean;
+  graphData: null | any;
 };
 
 export const InfoComponent = (props: PropsType) => {
@@ -22,10 +24,15 @@ export const InfoComponent = (props: PropsType) => {
   return (
     <div>
       <br />
-      <h2>
-        Anda telah login dengan email <strong>{userEmail}</strong> dan masuk ke
-        halaman Dashboard
-      </h2>
+      {props.graphData ? (
+        <ProfileData graphData={props.graphData} />
+      ) : (
+        <h2>
+          Anda telah login dengan email <strong>{userEmail}</strong> dan masuk
+          ke halaman Dashboard
+        </h2>
+      )}
+      <br />
       <form onSubmit={handleSubmit}>
         <FormControl>
           <OutlinedInput

@@ -1,83 +1,172 @@
-import React from "react";
-// we'll need InteractiveBrowserCredential here to force a user to sign-in through the browser
-import { InteractiveBrowserCredential } from "@azure/identity";
-// we're using these objects from the storage sdk - there are others for different needs
-import { BlobServiceClient, BlobItem } from "@azure/storage-blob";
-const {
-  TableServiceClient,
-  AzureNamedKeyCredential,
-} = require("@azure/data-tables");
+// Percobaan Koneksi dengan MySql
 
-interface Props {}
-interface State {
-  // a place to store our blob item metadata after we query them from the service
-  blobsWeFound: BlobItem[];
-  containerUrl: string;
-}
+import { makeStyles } from "@mui/styles";
+import Button from "@mui/material/Button";
+import { SubmitHandler, useForm } from "react-hook-form";
+import NavbarComponent from "../components/NavbarComponent";
+import axios from "axios";
+import { useLayoutEffect, useState } from "react";
 
-export class Percobaan extends React.Component<Props, State> {
-  state: State;
+const useStyles = makeStyles({
+  login: {
+    height: "620px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  form: {
+    width: "40%",
+    borderStyle: "solid",
+    borderRadius: "5px",
+    borderWidth: "1px",
+    borderColor: "rgb(0 0 0 / 10%)",
+    // Kanan, Bawah, Blur, Spread, Color
+    boxShadow: "10px 10px 10px 1px rgb(0 0 0 / 10%)",
+    padding: "40px",
+  },
+  judulLogin: {
+    width: "100%",
+    fontSize: "30px",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: "40px",
+  },
+  isiLogin: {
+    width: "100%",
+  },
+  input: {
+    "&::placeholder": {
+      color: "black",
+      paddingLeft: "10px",
+    },
+    "&:focus": {
+      backgroundColor: "rgb(247, 247, 247)",
+      "&::placeholder": {
+        color: "#e6e7e8",
+      },
+    },
+    "&:hover": {
+      backgroundColor: "rgb(247, 247, 247)",
+      "&::placeholder": {
+        color: "#fe5b2c",
+      },
+    },
+    // Ukuran Search Bar
+    height: "40px",
+    width: "100%",
+    backgroundColor: "#eeecea",
+    borderRadius: "5px",
+    borderWidth: "0px",
+    boxShadow: "1px 1px 2px 1px rgb(0 0 0 / 10%)",
+    marginTop: "20px",
+  },
+});
 
-  constructor(props: Props, state: State) {
-    //super(state);
-    super(props, state);
-    this.state = { blobsWeFound: [], containerUrl: "" };
-  }
+type Data = {
+  movieName: string;
+  movieReview: string;
+};
 
-  // here's our azure identity config
-  async componentDidMount() {
-    const account = "ecomindostorage";
-    const accountKey =
-      "PGwVzRVmBIxZoqvwEq1kCX6V18QeM+j/WA/TM55VBIcAg6ut61jvao5T09IaJ95XeTBXDMpP70BN+AStCuy9MQ==";
+type List = {
+  id: number;
+  movieName: string;
+  movieReview: string;
+};
 
-    const credential = new AzureNamedKeyCredential(account, accountKey);
-    const serviceClient = new TableServiceClient(
-      `https://${account}.table.core.windows.net`,
-      credential
-    );
-    let tablesIter = serviceClient.listTables();
-    let i = 1;
-    for await (const table of tablesIter) {
-      console.log(`Table${i}: ${table.name}`);
-      i++;
-      // Output:
-      // Table1: testTable1
-      // Table1: testTable2
-      // Table1: testTable3
-      // Table1: testTable4
-      // Table1: testTable5
-    }
-  }
+export default function Percobaan() {
+  // MUI styling
+  const classes = useStyles();
+  // React hook form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Data>();
 
-  render() {
-    return (
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>blob name</th>
-              <th>blob size</th>
-              <th>download url</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.blobsWeFound.map((x, i) => {
-              return (
-                <tr key={i}>
-                  <td>{x.name}</td>
-                  <td>{x.properties.contentLength}</td>
-                  <td>
-                    <img
-                      src={this.state.containerUrl + x.name}
-                      alt={this.state.containerUrl + x.name}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+  const [reviewMovieList, setReviewMovieList] = useState<List[]>();
+
+  const onSubmit: SubmitHandler<Data> = (data) => {
+    axios
+      .post("http://localhost:3001/api/insert", data)
+      .then(function () {
+        alert("Successful insert");
+        console.log("DATA : ", data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // ComponentDidMount
+  useLayoutEffect(
+    () => {
+      axios
+        .get("http://localhost:3001/api/get")
+        .then((response) => {
+          console.log("RESPONSE : ", response);
+          setReviewMovieList(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  return (
+    <div>
+      <NavbarComponent />
+
+      <div className={classes.login}>
+        <div className={classes.form}>
+          <div className={classes.judulLogin}>
+            <div>Form Review Movie</div>
+          </div>
+          <div className={classes.isiLogin}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <input
+                id="movieName"
+                className={classes.input}
+                type="text"
+                placeholder="Masukan Movie Name"
+                {...register("movieName", { required: true })}
+              />
+              {errors.movieName && <span>This field is required</span>}
+              <input
+                id="movieReview"
+                className={classes.input}
+                type="text"
+                placeholder="Masukan Movie Review"
+                {...register("movieReview", { required: true })}
+              />
+              {errors.movieReview && <span>This field is required</span>}
+              <Button
+                type="submit"
+                sx={{
+                  backgroundColor: "#fe5b2c",
+                  borderRadius: "15px",
+                  boxShadow: "1px 1px 2px 1px rgb(0 0 0 / 10%)",
+                  color: "white",
+                  height: "40px",
+                  width: "100%",
+                  marginTop: "20px",
+                  "&:hover": {
+                    backgroundColor: "rgb(247, 247, 247)",
+                    color: "#fe5b2c",
+                  },
+                }}
+              >
+                Submit
+              </Button>
+            </form>
+          </div>
+        </div>
       </div>
-    );
-  }
+
+      <div>{reviewMovieList && reviewMovieList.map((val) => {
+         return (<h1>MovieName : {val.movieName} and MovieReview : {val.movieReview}</h1>)
+      })}</div>
+    </div>
+  );
 }

@@ -1,5 +1,4 @@
 import Home from "./pages/Home";
-import { Percobaan} from "./pages/Percobaan";
 import Dashboard from "./pages/user/Dashboard";
 import Login from "./pages/user/Login";
 
@@ -15,14 +14,8 @@ export const routes = [
     element: <Login />,
   },
   {
-    path: "/home",
+    path: "/",
     name: "Home",
     element: <Home />,
-  },
-  {
-    path: "/percobaan",
-    name: "Percobaan",
-    element: <Percobaan />,
-  },
+  }
 ];
-

@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { setDataSearch } from "../features/search/searchSlice";
 import { API_URL } from "../utils/api";
+// Azure AD
+import { useIsAuthenticated } from "@azure/msal-react";
 
 const useStyles = makeStyles({
   nav: {
@@ -85,6 +87,9 @@ const useStyles = makeStyles({
 const NavbarComponent = () => {
   // Styling MUI
   const classes = useStyles();
+  // Azure AD
+  const isAuthenticated = useIsAuthenticated();
+
   // React Redux
   const userIsLoggedIn = useAppSelector((state) => state.users.isLoggedIn);
   const dispatch = useAppDispatch();
@@ -147,7 +152,7 @@ const NavbarComponent = () => {
             onChange={(event) => handleChange(event)}
           />
         </form>
-        {userIsLoggedIn ? (
+        {isAuthenticated ? (
           <Link
             to="/dashboard"
             className={classNames(
@@ -160,7 +165,7 @@ const NavbarComponent = () => {
           </Link>
         ) : (
           <Link
-            to="/percobaan"
+            to="/login"
             className={classNames(
               classes.navLink,
               classes.col3,
