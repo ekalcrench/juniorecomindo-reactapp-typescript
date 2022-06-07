@@ -23,7 +23,7 @@ function App() {
         return <Route path={prop.path} element={prop.element} key={key} />;
       })}
       {/* Redirect wrong path to home */}
-      <Route path="*" element={<Navigate replace to="/" />} />
+      {/* <Route path="*" element={<Navigate replace to="/" />} /> */}
     </Routes>
   );
 }
