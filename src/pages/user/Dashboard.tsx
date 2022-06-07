@@ -55,13 +55,14 @@ function Dashboard() {
           ...loginRequest,
           account: accounts[0],
         };
-
+        console.log("request : ", request);
         // Silently acquires an access token which is then attached to a request for Microsoft Graph data
         instance
           .acquireTokenSilent(request)
           .then((response) => {
             callMsGraph(response.accessToken).then((response: any) => {
               setGraphData(response);
+              console.log("response : ", response);
               console.log("response.accessToken 1 : ", response.accessToken);
             });
           })
@@ -69,6 +70,7 @@ function Dashboard() {
             instance.acquireTokenPopup(request).then((response: any) => {
               callMsGraph(response.accessToken).then((response: any) => {
                 setGraphData(response);
+                console.log("response : ", response);
                 console.log("response.accessToken 2 : ", response.accessToken);
               });
             });
@@ -89,11 +91,11 @@ function Dashboard() {
         <div className={classes.dashboard}>
           <div className={classes.container}>
             <InfoComponent
-                graphData={graphData}
-                name={name}
-                setName={setName}
-                isLoggedIn={userIsLoggedIn}
-              />
+              graphData={graphData}
+              name={name}
+              setName={setName}
+              isLoggedIn={userIsLoggedIn}
+            />
             <h2>Hello {name}</h2>
             <h5>Ini Dashboard</h5>
             <hr />
