@@ -10,6 +10,7 @@ import { setLogout } from "../../features/user/usersSlice";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../features/user/graph";
+import { LocalStoreList } from "../../features/localStorage/localStorageHelper";
 
 const useStyles = makeStyles({
   dashboard: {
@@ -26,6 +27,7 @@ function handleLogout(instance: any) {
   instance.logoutPopup().catch((e: any) => {
     console.error(e);
   });
+  localStorage.clear();
 }
 
 function Dashboard() {
@@ -75,6 +77,7 @@ function Dashboard() {
           });
       }
       console.log("accounts : ", accounts);
+      LocalStoreList("accounts", accounts, 1);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
