@@ -55,23 +55,21 @@ function Dashboard() {
           ...loginRequest,
           account: accounts[0],
         };
-        console.log("request : ", request);
+
         // Silently acquires an access token which is then attached to a request for Microsoft Graph data
         instance
           .acquireTokenSilent(request)
           .then((response) => {
+            console.log("response.accessToken 1 : ", response.accessToken);
             callMsGraph(response.accessToken).then((response: any) => {
               setGraphData(response);
-              console.log("response : ", response);
-              console.log("response.accessToken 1 : ", response.accessToken);
             });
           })
           .catch((e) => {
             instance.acquireTokenPopup(request).then((response: any) => {
+              console.log("response.accessToken 2 : ", response.accessToken);
               callMsGraph(response.accessToken).then((response: any) => {
                 setGraphData(response);
-                console.log("response : ", response);
-                console.log("response.accessToken 2 : ", response.accessToken);
               });
             });
           });

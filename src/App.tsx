@@ -2,14 +2,14 @@ import { useIsAuthenticated } from "@azure/msal-react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { getUser } from "./features/user/usersSlice";
-import { routes } from './routes';
+import { routes } from "./routes";
 
 function App() {
   const dispatch = useAppDispatch();
   dispatch(getUser()); // Get User yang telah store di local storage selalu
   const userIsLoggedIn = useAppSelector((state) => state.users.isLoggedIn);
   const isAuthenticated = useIsAuthenticated();
-  
+
   return (
     <Routes>
       {/* If authenticated redirect to dashboard, else redirect to login*/}
