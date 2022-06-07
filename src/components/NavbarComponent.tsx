@@ -135,7 +135,7 @@ const NavbarComponent = () => {
   return (
     <div className={classes.nav}>
       <div className={classes.row}>
-        <Link to="/home" className={classes.col3}>
+        <Link to="/" className={classes.col3}>
           <img
             src="https://www.poinin.com/_next/image?url=%2Fassets%2Ficon%2Fpoinin_icon.png&w=1920&q=75"
             className={classes.logoBrand}
