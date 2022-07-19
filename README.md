@@ -12,7 +12,7 @@ Menggunakan Material UI styling, untuk instalasi dan dokumentasi bisa dilihat di
 
 ## DATABASE
 
-Menggunakan API JsonPlaceholder untuk database, ada di file db.json
+Menggunakan API JsonPlaceholder untuk database, ada di file [db.json](https://drive.google.com/drive/folders/1JYz0QgQU7IYI30VCuHQKNbWI0ZMgAGJZ?usp=sharing)
 
 ### CARA INSTALASI API
 
