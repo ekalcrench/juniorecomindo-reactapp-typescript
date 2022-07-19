@@ -11,6 +11,7 @@ import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../authConfig";
 import { callMsGraph } from "../../features/user/graph";
 import { LocalStoreList } from "../../features/localStorage/localStorageHelper";
+// import { persistedReducer } from "../../app/store";
 
 const useStyles = makeStyles({
   dashboard: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
 });
 
 function handleLogout(instance: any) {
-  instance.logoutPopup().catch((e: any) => {
+  instance.logoutRedirect().catch((e: any) => {
     console.error(e);
   });
   localStorage.clear();
@@ -35,6 +36,8 @@ function Dashboard() {
   const classes = useStyles();
 
   // Redux
+  // const persist = persistedReducer;
+  // console.log("persistedReducer : ",persist);
   const dataSearch = useAppSelector((state) => state.search.dataSearch);
   const userIsLoggedIn = useAppSelector((state) => state.users.isLoggedIn);
   const dispatch = useAppDispatch();

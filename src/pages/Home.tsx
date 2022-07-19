@@ -107,6 +107,7 @@ function Home() {
   const handleScroll = (event: any) => {
     console.log("loading : ", loading);
     if (!loading) {
+      console.log("window.innerHeight : ", window.innerWidth);
       // Jika sudah mencapai bottom page
       if (
         window.innerHeight + event.target.documentElement.scrollTop + 1 >

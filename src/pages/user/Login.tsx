@@ -80,7 +80,7 @@ const useStyles = makeStyles({
 
 // Outlook login
 function handleLogin(instance: any) {
-  instance.loginPopup(loginRequest).catch((e: any) => {
+  instance.loginRedirect(loginRequest).catch((e: any) => {
     console.error(e);
   });
 }
@@ -192,7 +192,7 @@ export default function Login() {
                   alt={IMAGES_PATH + "microsoft.png"}
                   style={{ height: "100%", objectFit: "scale-down" }}
                 />
-                Login dengan Outlook
+                Login With Microsoft
               </Button>
             </div>
           </div>

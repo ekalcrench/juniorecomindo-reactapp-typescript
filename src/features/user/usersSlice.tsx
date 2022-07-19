@@ -24,13 +24,13 @@ export const usersSlice = createSlice({
       state.isLoggedIn = true;
       state.email = action.payload.email;
       state.password = action.payload.password;
-      window.localStorage.setItem("user", JSON.stringify(state));
+      // window.localStorage.setItem("user", JSON.stringify(state));
     },
     setLogout: (state) => {
       state.isLoggedIn = false;
       state.email = "";
       state.password = "";
-      localStorage.clear();
+      // localStorage.clear();
     },
     getUser: (state) => {
       const getItem = window.localStorage.getItem("user");
